@@ -11,7 +11,7 @@ public class TweetInfo {
         return TweetInfo.Filename;
     }
 
-    public static String getGradeLevelScore(){
+    public static String getIntensity(){
         return TweetInfo.intensity;
     }
 

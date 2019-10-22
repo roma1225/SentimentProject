@@ -67,10 +67,10 @@ public class ProcessFile {
         return output;
     }
 
-    public static ArrayList<DocumentInfo> readDocInfo(String filename){
+    public static ArrayList<TweetInfo> readDocInfo(String filename){
 
         Scanner scanner;
-        ArrayList<DocumentInfo> documentInfoList = new ArrayList<>();
+        ArrayList<TweetInfo> tweetInfoList = new ArrayList<>();
 
         try {
             scanner = new Scanner(new FileReader(filename));
@@ -78,9 +78,9 @@ public class ProcessFile {
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
 
-                DocumentInfo info = processLine(line);
+                TweetInfo info = processLine(line);
 
-                documentInfoList.add( info );
+                tweetInfoList.add( info );
 
             }
 
@@ -90,25 +90,24 @@ public class ProcessFile {
             System.out.println("File not found " + filename);
         }
 
-        return documentInfoList;
+        return tweetInfoList;
     }
 
     private static String getWordFromLine(String line) {
         return line.substring(0, line.indexOf("="));
     }
 
-    public static DocumentInfo processLine(String line) {
+    public static TweetInfo processLine(String line) {
         String[] values = line.split(",");    // note:  may still be starting or ending spaces in values!
 
     /* note:  may want to check the length of values to be this line is good.  If not, display “bad
              input” and show the line */
 
         String filename = values[0].trim();
-        double gradeScore = Double.parseDouble( values[92].trim() );
-        double fkreadability = Double.parseDouble(values[91].trim() );
+        String intensity = Double.parseDouble(values[91].trim() ); // fix trim... find patterns
 
 
-        return new DocumentInfo(filename, gradeScore, fkreadability);
+        return new TweetInfo(filename, intensity);
 
     }
 

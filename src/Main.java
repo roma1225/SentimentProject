@@ -3,22 +3,27 @@ import java.util.ArrayList;
 public class Main {
     public static void main(String[] args) {
 
-        ArrayList<String> positives = readF
+        ArrayList<String> positives = ProcessFile.readFileAsString("bluh");
+        ArrayList<String> negatives = ProcessFile.readFileAsString("bluh");
+        ArrayList<String> tweets = ProcessFile.readFileAsString("bluh");
+
     }
+
+
 
     private static void calculateAndDisplayError(){
 
-        ArrayList<DocumentInfo> docs = TextLib.readDocInfo("data/Texts/allfeatures-ose-final.csv");
+        ArrayList<TweetInfo> tweets = ProcessFile.readDocInfo("data/Texts/allfeatures-ose-final.csv");
         double totalError = 0.0;
 
-        for (DocumentInfo doc: docs) {
+        for (TweetInfo tweet: tweets) {
 
-            String filename = doc.getFileName();
+            String filename = tweet.getFileName();
 
-            String text = TextLib.readFileAsString(filename);
+            String text = ProcessFile.readFileAsString(filename);
 
-            double prediction = FKReadability("data/Texts/AllTexts/"+ filename);
-            double error = (((prediction - doc.getReadabilityScore())/doc.getReadabilityScore())*100);
+            double prediction = intensity("data/Texts/AllTexts/"+ filename);
+            double error = (((prediction - tweet.getIntensity()/tweet.\tweet.getIntensity())*100);
             totalError += Math.abs(error);
         }
 
