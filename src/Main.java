@@ -6,11 +6,7 @@ public class Main {
         ArrayList<String> positives = ProcessFile.readFileAsString("bluh");
         ArrayList<String> negatives = ProcessFile.readFileAsString("bluh");
         ArrayList<String> tweets = ProcessFile.readFileAsString("bluh");
-
     }
-
-
-
     private static void calculateAndDisplayError(){
 
         ArrayList<TweetInfo> tweets = ProcessFile.readDocInfo("data/Texts/allfeatures-ose-final.csv");
@@ -22,7 +18,7 @@ public class Main {
 
             String text = ProcessFile.readFileAsString(filename);
 
-            double prediction = Intensity("data/Texts/AllTexts/"+ filename);
+            double prediction = ("data/Texts/AllTexts/"+ filename); //I'm not sure what its called
             double error = (((prediction - tweet.getIntensity()/tweet.\tweet.getIntensity())*100);
             totalError += Math.abs(error);
         }
