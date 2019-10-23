@@ -6,11 +6,6 @@ public class Main {
         ArrayList<String> positives = ProcessFile.readFileAsString("bluh");
         ArrayList<String> negatives = ProcessFile.readFileAsString("bluh");
         ArrayList<String> tweets = ProcessFile.readFileAsString("bluh");
-        double moderateIntensityMax; //need to set the boundaries
-        double moderateIntensityMin;
-        double intenseIntensityMin;
-        double intenseIntensityMax;
-        double score;
 
     }
 
@@ -27,36 +22,41 @@ public class Main {
 
             String text = ProcessFile.readFileAsString(filename);
 
-            double prediction = intensity("data/Texts/AllTexts/"+ filename);
+            double prediction = Intensity("data/Texts/AllTexts/"+ filename);
             double error = (((prediction - tweet.getIntensity()/tweet.\tweet.getIntensity())*100);
             totalError += Math.abs(error);
         }
 
-        System.out.println("Average error is:" + totalError/docs.size() );
+        System.out.println("Average error is:" + totalError/tweets.size() );
 
     }
 
     public double intensity() {
-        double positiveIntensityScore =(double) (positives.size()-1) / ((positives.size()-1) + (negative.size()-1));
-        double negativeIntensityScore = (double) (negatives.size()-1) / ((positives.size()-1) + (negative.size()-1));
+        double score;
+        double positiveIntensityScore =(double) (positives.size()) / ((positives.size()) + (negative.size()));
+        double negativeIntensityScore = (double) (negatives.size()) / ((positives.size()) + (negative.size()));
 
         if(positiveIntensityScore > negativeIntensityScore){
            score = intensityScore(positiveIntensityScore);
         }else{
-            score = -1 * intensityScore(negativeIntensityScore)
+            score = -1 * intensityScore(negativeIntensityScore);
         }
 
         return score;
     }
 
     public double intensityScore(double intense){
+        double moderateIntensityMax;
+        double moderateIntensityMin;
+        double intenseIntensityMin;
+        double intenseIntensityMax;
         if(intense > moderateIntensityMin && intense < moderateIntensityMax){
             score = blah blah blah;  //assign a moderate intensity score
         }
-        if(intense > intenseIntensityMin && double intenseIntensityMax){
-            score = //assign intense score;
+        if(intense > intenseIntensityMin && intense < intenseIntensityMax){
+            score = ;//assign intense score;
         }else{
-            score = //assign a neutral score;
+            score = ;//assign a neutral score;
         }
     }
 
