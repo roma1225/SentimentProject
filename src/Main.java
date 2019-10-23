@@ -6,6 +6,11 @@ public class Main {
         ArrayList<String> positives = ProcessFile.readFileAsString("bluh");
         ArrayList<String> negatives = ProcessFile.readFileAsString("bluh");
         ArrayList<String> tweets = ProcessFile.readFileAsString("bluh");
+        double moderateIntensityMax; //need to set the boundaries
+        double moderateIntensityMin;
+        double intenseIntensityMin;
+        double intenseIntensityMax;
+        double score;
 
     }
 
@@ -31,8 +36,30 @@ public class Main {
 
     }
 
-    public double intensityScore() {
-        //HERE WE PUT THE EQUATION
+    public double intensity() {
+        double positiveIntensityScore =(double) (positives.size()-1) / ((positives.size()-1) + (negative.size()-1));
+        double negativeIntensityScore = (double) (negatives.size()-1) / ((positives.size()-1) + (negative.size()-1));
+
+        if(positiveIntensityScore > negativeIntensityScore){
+           score = intensityScore(positiveIntensityScore);
+        }else{
+            score = -1 * intensityScore(negativeIntensityScore)
+        }
+
+        return score;
     }
+
+    public double intensityScore(double intense){
+        if(intense > moderateIntensityMin && intense < moderateIntensityMax){
+            score = blah blah blah;  //assign a moderate intensity score
+        }
+        if(intense > intenseIntensityMin && double intenseIntensityMax){
+            score = //assign intense score;
+        }else{
+            score = //assign a neutral score;
+        }
+    }
+
+
 
 }
