@@ -68,10 +68,16 @@ public class Tweet {
 
     public double getOccurencesOfNegativeWords(){
         int totalNegatives = 0;
-
         for(int i =0; i<words.size(); i++){
-            if(isNegative(words.get(i))){
-                totalNegatives++;
+            String word = words.get(i);
+            String privWord = words.get(i-1);
+            if( isNegative(word) ){
+                if( isNegative(privWord) || isNeutral(privWord) ){
+                    totalNegatives++;
+                    if( isInCaps(word) ){
+                        //add something
+                    }
+                }
             }
         }
         return totalNegatives;
@@ -79,11 +85,16 @@ public class Tweet {
 
     public int getOccurencesOfPositiveWords(){
         int totalPositives = 0;
-
         for(int i =0; i<words.size(); i++){
             String word = words.get(i);
+            String privWord = words.get(i-1);
             if(isPositive(word)){
-                totalPositives++;
+                if(isPositive(privWord) || isNeutral(privWord)){
+                    totalPositives++;
+                    if(isInCaps(word)){
+                        //add something
+                    }
+                }
             }
         }
         return totalPositives;
@@ -103,6 +114,19 @@ public class Tweet {
         return false;
     }
 
+    private boolean isNeutral(String word){
+        if(!positives.contains(word) && !negatives.contains(word)){
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isInCaps(String word){
+        if("ABCDEFGHIJKLMNOPQRSTUVWXYZ".contains(word)){
+            return true;
+        }
+        return false;
+    }
 
 }
 
