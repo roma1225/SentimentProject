@@ -1,11 +1,11 @@
+import java.text.BreakIterator;
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class Tweet {
     String text;
     double positive;
     double negative;
-    double neutral;
-    String positivity;
     ArrayList<String> words;
     ArrayList<String> sentences;
     ArrayList<String> vocab = getVocabList();
@@ -17,14 +17,25 @@ public class Tweet {
     public static ArrayList<String> negativeEmojis;
 
 
-    public Tweet(String text, String positivity){
+    public Tweet(String text){
         this.text = text;
-        this.positivity = positivity;
     }
-    public
+
+    public void getWordList(){
+        sentences = splitIntoSentences();
+        words = splitIntoWords();
+    }
 
     public String getTweet(){
         return text;
+    }
+
+    public double getPositive(){
+        return positive;
+    }
+
+    public double getNegative(){
+        return negative;
     }
 
     public ArrayList<String> getVocabList(){
@@ -196,6 +207,41 @@ public class Tweet {
         return alphabet;
     }
 
+    public ArrayList<String> splitIntoWords() {
+        ArrayList<String> newWords = new ArrayList<>();
+        for (int i = 0; i < sentences.size(); i++) {
+            String sentence = sentences.get(i);
+            String[] words = sentence.split(" ");
+            for (String word: words) {
+                newWords.add(word);
+            }
+        }
+        return newWords;
+    }
+
+    public ArrayList<String> splitIntoSentences(){
+
+        ArrayList<String> output = new ArrayList<String>();
+        Locale locale = Locale.US;
+        BreakIterator breakIterator = BreakIterator.getSentenceInstance(locale);
+        breakIterator.setText(text);
+
+        int prevIndex = 0;
+        int boundaryIndex = breakIterator.first();
+        while(boundaryIndex != BreakIterator.DONE) {
+            String sentence = text.substring(prevIndex, boundaryIndex).trim();
+            if (sentence.length()>0)
+                output.add(sentence);
+            prevIndex = boundaryIndex;
+            boundaryIndex = breakIterator.next();
+        }
+
+        String sentence = text.substring(prevIndex).trim();
+        if (sentence.length()>0)
+            output.add(sentence);
+
+        return output;
+    }
 }
 
 

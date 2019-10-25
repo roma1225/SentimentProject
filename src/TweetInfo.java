@@ -1,14 +1,14 @@
 public class TweetInfo {
-    static String Filename;
+    static Tweet tweet;
     static String intensity;
 
-    public TweetInfo(String filename, String intensity){
-        this.Filename = filename;
+    public TweetInfo(Tweet tweet, String intensity){
+        this.tweet = tweet;
         this.intensity = intensity;
     }
 
-    public static String getFileName(){
-        return TweetInfo.Filename;
+    public static Tweet getFileName(){
+        return tweet;
     } //returns filename
 
     public static String getIntensity(){

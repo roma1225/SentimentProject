@@ -1,20 +1,51 @@
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.*;
 import java.text.BreakIterator;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Scanner;
 
 public class ProcessFile {
-    public String text;
-    public ArrayList<String> sentences;
+    public static String filename;
 
-    //how does the readFileAsString work
-    //
+    public static ArrayList<Tweet> makeTweetsList(String filename){
+        String text = readFileAsString();
+        String[] texts = text.split("\n");
+        ArrayList<Tweet> tweets = new ArrayList<>();
+        int lines = countLines();
 
+        for (int i = 0; i < lines; i++) {
+            Tweet tweet = new Tweet(texts[i]);
+            tweets.add(tweet);
+        }
+        return tweets;
+    }
 
-    public static String readFileAsString(String filename) {
+    public static ArrayList<String> makeConnotationList(String filename){
+        String text = readFileAsString();
+        String[] texts = text.split("\n");
+        ArrayList<String> words = new ArrayList<>();
+        int lines = countLines();
+
+        for (int i = 0; i < lines; i++) {
+            String word = texts[i];
+            words.add(word);
+        }
+        return words;
+    }
+
+    public static ArrayList<TweetInfo> makeTweetInfoList(ArrayList<Tweet> tweets, ArrayList<String> connotation){
+        ArrayList<TweetInfo> tweetsInfo = new ArrayList<>();
+        if(tweets.size() == connotation.size()) {
+            for (int i = 0; i < tweets.size(); i++) {
+                Tweet tweet = tweets.get(i);
+                String cntion = connotation.get(i);
+                TweetInfo tweetInfo = new TweetInfo(tweet, cntion);
+            }
+        }
+        return tweetsInfo;
+    }
+
+    public static String readFileAsString() {
         Scanner scanner;
         StringBuilder output = new StringBuilder();
 
@@ -34,84 +65,36 @@ public class ProcessFile {
         return output.toString();
     }
 
-    public static ArrayList<String> splitIntoWords(ArrayList<String> sentences) {
-        ArrayList<String> newWords = new ArrayList<>();
-        for (int i = 0; i < sentences.size(); i++) {
-            String sentence = sentences.get(i);
-            String[] words = sentence.split(" ");
-            for (String word: words) {
-                newWords.add(word);
-            }
-        }
-        return newWords;
-    }
 
-    public ArrayList<String> splitIntoSentences(){
+    public static int countLines() {
+        try{
 
-        ArrayList<String> output = new ArrayList<String>();
-        Locale locale = Locale.US;
-        BreakIterator breakIterator = BreakIterator.getSentenceInstance(locale);
-        breakIterator.setText(text);
+            File file =new File("c:\\ihave10lines.txt");
 
-        int prevIndex = 0;
-        int boundaryIndex = breakIterator.first();
-        while(boundaryIndex != BreakIterator.DONE) {
-            String sentence = text.substring(prevIndex, boundaryIndex).trim();
-            if (sentence.length()>0)
-                output.add(sentence);
-            prevIndex = boundaryIndex;
-            boundaryIndex = breakIterator.next();
-        }
+            if(file.exists()){
 
-        String sentence = text.substring(prevIndex).trim();
-        if (sentence.length()>0)
-            output.add(sentence);
+                FileReader fileReader = new FileReader(filename);
+                LineNumberReader lnr = new LineNumberReader(fileReader);
 
-        return output;
-    }
+                int linenumber = 0;
 
-    public static ArrayList<TweetInfo> readDocInfo(String filename){
+                while (lnr.readLine() != null){
+                    linenumber++;
+                }
 
-        Scanner scanner;
-        ArrayList<TweetInfo> tweetInfoList = new ArrayList<>();
+                return linenumber;
 
-        try {
-            scanner = new Scanner(new FileReader(filename));
-            scanner.nextLine();
-            while (scanner.hasNextLine()) {
-                String line = scanner.nextLine();
 
-                TweetInfo info = processLine(line);
-
-                tweetInfoList.add( info );
-
+            }else{
+                System.out.println("File does not exists!");
+                return 0;
             }
 
-            scanner.close();
-
-        } catch (FileNotFoundException e) {
-            System.out.println("File not found " + filename);
+        }catch(IOException e){
+            e.printStackTrace();
         }
 
-        return tweetInfoList;
-    }
-
-    private static String getWordFromLine(String line) {
-        return line.substring(0, line.indexOf("="));
-    }
-
-    public static TweetInfo processLine(String line) {
-        String[] values = line.split(",");    // note:  may still be starting or ending spaces in values!
-
-    /* note:  may want to check the length of values to be this line is good.  If not, display “bad
-             input” and show the line */
-
-        String filename = values[0].trim();
-        String intensity = Double.parseDouble(values[91].trim() ); // fix trim... find patterns
-
-
-        return new TweetInfo(filename, intensity);
-
+        return 0;
     }
 
 }
