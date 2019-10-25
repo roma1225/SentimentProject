@@ -21,6 +21,7 @@ public class Tweet {
         this.text = text;
         this.positivity = positivity;
     }
+    public
 
     public String getTweet(){
         return text;
