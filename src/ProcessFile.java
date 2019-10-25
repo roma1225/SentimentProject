@@ -10,6 +10,10 @@ public class ProcessFile {
     public String text;
     public ArrayList<String> sentences;
 
+    //how does the readFileAsString work
+    //
+
+
     public static String readFileAsString(String filename) {
         Scanner scanner;
         StringBuilder output = new StringBuilder();
@@ -29,7 +33,6 @@ public class ProcessFile {
 
         return output.toString();
     }
-
 
     public static ArrayList<String> splitIntoWords(ArrayList<String> sentences) {
         ArrayList<String> newWords = new ArrayList<>();

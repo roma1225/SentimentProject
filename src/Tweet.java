@@ -2,16 +2,22 @@ import java.util.ArrayList;
 
 public class Tweet {
     String text;
-    double positivity;
+    double positive;
+    double negative;
+    double neutral;
+    String positivity;
     ArrayList<String> words;
     ArrayList<String> sentences;
-    ArrayList<String> vocab;
+    ArrayList<String> vocab = getVocabList();
+    ArrayList<String> alphabet = getCharcsList();
     public boolean isSentenceUpdates = true;
-    public ArrayList<String> positives;
+    public static ArrayList<String> positives;
     public static ArrayList<String> negatives;
+    public static ArrayList<String> positiveEmojis;
+    public static ArrayList<String> negativeEmojis;
 
 
-    public Tweet(String text, double positivity){
+    public Tweet(String text, String positivity){
         this.text = text;
         this.positivity = positivity;
     }
@@ -65,66 +71,128 @@ public class Tweet {
         return wordCount;
     }
 
-    public double getOccurencesOfNegativeWords(){
-        int totalNegatives = 0;
-        for(int i =0; i<words.size(); i++){
+    public void getOccurencesOfNegativeWords(){
+        for(int i =0; i<words.size(); i++) {
             String word = words.get(i);
-            String privWord = words.get(i-1);
-            if( isNegative(word) ){
-                if( isNegative(privWord) || isNeutral(privWord) ){
-                    totalNegatives++;
-                    if( isInCaps(word) ){
-                        //add something
-                    }
+            String privWord = words.get(i - 1);
+            if (isNegative(word)) {
+                negative++;
+                if (isInCaps(word)) {
+                    negative = negative + 0.5;
+                }
+            }
+            if (privWord.equals("not")) {
+                positive++;
+                if (isInCaps(privWord)) {
+                    negative = negative + 0.5;
                 }
             }
         }
-        return totalNegatives;
     }
 
-    public int getOccurencesOfPositiveWords(){
-        int totalPositives = 0;
+    public void getOccurencesOfPositiveWords(){
         for(int i =0; i<words.size(); i++){
             String word = words.get(i);
             String privWord = words.get(i-1);
             if(isPositive(word)){
-                if(isPositive(privWord) || isNeutral(privWord)){
-                    totalPositives++;
-                    if(isInCaps(word)){
-                        //add something
+                positive++;
+                if(isInCaps(word)){
+                        positive = positive + 0.5;
                     }
+                }
+                if(privWord.equals("not")){
+                    negative++;
+                    if(isInCaps(privWord)){
+                        positive = positive + 0.5;
                 }
             }
         }
-        return totalPositives;
     }
 
-    private static boolean isNegative(String word) {
-        if(negatives.contains(word)){
-            return true;
+    private boolean isNegative(String word) {
+        if(!isAnEmoji(word)) {
+            if (negatives.contains(word)) {
+                return true;
+            }
+        }
+        else {
+            if (negativeEmojis.contains(word)) {
+                return true;
+            }
         }
         return false;
     }
 
     private boolean isPositive(String word) {
-        if(positives.contains(word)){
-            return true;
+        if(!isAnEmoji(word)) {
+            if (positives.contains(word)) {
+                return true;
+            }
+        }
+        else {
+            if (positiveEmojis.contains(word)) {
+                return true;
+            }
         }
         return false;
     }
 
-    private boolean isNeutral(String word){
-        if(!positives.contains(word) && !negatives.contains(word)){
-            return true;
-        }
-        return false;
-    }
+//    private boolean isNeutral(String word){
+//        if(!positives.contains(word) && !negatives.contains(word)){
+//            return true;
+//        }
+//        return false;
+//    }
 
     public boolean isInCaps(String word){
-        if("ABCDEFGHIJKLMNOPQRSTUVWXYZ".contains(word)){
+        if("ABCDEFGHIJKLMNOPQRSTUVWXYZ".contains(word)){ //maybe change - ask mr D
             return true;
         }
         return false;
+    }
+
+    public boolean isAnEmoji(String word){
+        int count = 0;
+        word = word.toLowerCase();
+        for (int i = 0; i < word.length()-1; i++) {
+            String charc = word.substring(i, i+1);
+            if(alphabet.contains(charc)){
+                count++;
+            }
+        }
+        if(count == word.length()) return true;
+        else return false;
+    }
+
+    private ArrayList<String> getCharcsList(){ //should be here?
+        ArrayList<String> alphabet = new ArrayList<>();
+        alphabet.add("a");
+        alphabet.add("b");
+        alphabet.add("c");
+        alphabet.add("d");
+        alphabet.add("e");
+        alphabet.add("f");
+        alphabet.add("g");
+        alphabet.add("h");
+        alphabet.add("i");
+        alphabet.add("j");
+        alphabet.add("k");
+        alphabet.add("l");
+        alphabet.add("m");
+        alphabet.add("n");
+        alphabet.add("o");
+        alphabet.add("p");
+        alphabet.add("q");
+        alphabet.add("r");
+        alphabet.add("s");
+        alphabet.add("t");
+        alphabet.add("u");
+        alphabet.add("v");
+        alphabet.add("w");
+        alphabet.add("x");
+        alphabet.add("y");
+        alphabet.add("z");
+        return alphabet;
     }
 
 }
