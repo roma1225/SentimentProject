@@ -14,8 +14,8 @@ public class Tweet {
     ArrayList<String> negatives;
     ArrayList<String> positiveEmojis = ProcessFile.makeConnotationList("");
     ArrayList<String> negativeEmojis = ProcessFile.makeConnotationList("");
-    ArrayList<String> globalPositives = ProcessFile.makeConnotationList("pos.csv"); //insert filenames
-    ArrayList<String> globalNegatives = ProcessFile.makeConnotationList("neg.csv");
+    ArrayList<String> globalPositives = ProcessFile.makeConnotationList("data/pos.csv"); //insert filenames
+    ArrayList<String> globalNegatives = ProcessFile.makeConnotationList("data/neg.csv");
     double intensity;
 
 
