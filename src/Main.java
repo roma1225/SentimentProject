@@ -3,29 +3,37 @@ import java.util.ArrayList;
 public class Main {
     public static void main(String[] args) {
 
-        String posText = ProcessFile.readFileAsString("idea/pos.cvs");
-        String negText = ProcessFile.readFileAsString("idea/neg.cvs");
+        ArrayList<Tweet> tweets = ProcessFile.makeTweetsList("");
+        ArrayList<String> connotationsOfTweets = ProcessFile.makeConnotationList("");
+        ArrayList<Double> intensities = calculateIntensities();
+        ArrayList<TweetInfo> tweetsInfo = ProcessFile.makeTweetInfoList(tweets, connotationsOfTweets, intensities);
+
     }
 
+    private static ArrayList<Double> calculateIntensities() {
 
+    }
 
-    private static void calculateAndDisplayError(){
+    private static void calculateAndDisplayError(ArrayList<TweetInfo> tweetsInfo){
 
-        ArrayList<TweetInfo> tweets = ProcessFile.readDocInfo("data/Texts/allfeatures-ose-final.csv");
         double totalError = 0.0;
+        double count;
 
-        for (TweetInfo tweet: tweets) {
+        for (int i = 0; i < tweetsInfo.size(); i++) {
+            TweetInfo tweetInfo = tweetsInfo.get(i);
+            String connotation = tweetInfo.getConnotation();
+            Tweet tweet = tweetInfo.getTweet();
+            double intensity =
+            String prediction = sentimentScore(tweet);
+            String answer = connotation;
+            if(prediction.equals(connotation)) count++;
 
-            String filename = tweet.getFileName();
-
-            String text = ProcessFile.readFileAsString(filename);
-
-            double prediction = intensityScore(""+ filename);
             double error = (((prediction - tweet.getIntensity()/tweet.\tweet.getIntensity())*100);
             totalError += Math.abs(error);
         }
 
-        System.out.println("Average error is:" + totalError/docs.size() );
+        System.out.println("Average error is of Connotation:" + count/tweetsInfo.size() *100 );
+
 
     }
 
@@ -42,16 +50,11 @@ public class Main {
 //        return score;
 //    }
 
-    public String intensityScore(String filename) {
-        String text = ProcessFile.readFileAsString(filename);
-        Tweet tweet = new Tweet(text);
+    public static String sentimentScore(Tweet tweet) {
         double negBorder = 33.34;
         double posBorder = 66.67;
         String connotation = "";
-        int wordCount = tweet.getWordCount();
-        double negPercentage = (double)(tweet.getNegative()/wordCount) *100;
-        double posPercentage = (double)(tweet.getPositive()/wordCount) *100;
-        double intensity = (double)(posPercentage/(negPercentage+posPercentage)*100);
+        double intensity = tweet.calculateIntensity();
 
         if(intensity>posBorder && intensity <= 100) {
             connotation = "positive";

@@ -6,24 +6,25 @@ public class Tweet {
     String text;
     double positive;
     double negative;
-    ArrayList<String> words;
-    ArrayList<String> sentences;
+    ArrayList<String> words = splitIntoWords(); //do we do this?
+    ArrayList<String> sentences = splitIntoSentences();
     ArrayList<String> vocab = getVocabList();
     ArrayList<String> alphabet = getCharcsList();
-    public boolean isSentenceUpdates = true;
-    public static ArrayList<String> positives;
-    public static ArrayList<String> negatives;
-    public static ArrayList<String> positiveEmojis;
-    public static ArrayList<String> negativeEmojis;
+    public ArrayList<String> positives;
+    public ArrayList<String> negatives;
+    ArrayList<String> positiveEmojis = ProcessFile.makeConnotationList("");
+    ArrayList<String> negativeEmojis = ProcessFile.makeConnotationList("");
+    ArrayList<String> globalPositives = ProcessFile.makeConnotationList(""); //insert filenames
+    ArrayList<String> globalNegatives = ProcessFile.makeConnotationList("");
+    public double intensity;
 
 
     public Tweet(String text){
         this.text = text;
     }
 
-    public void getWordList(){
-        sentences = splitIntoSentences();
-        words = splitIntoWords();
+    public ArrayList<String> getWordList(){
+        return words;
     }
 
     public String getTweet(){
@@ -39,7 +40,6 @@ public class Tweet {
     }
 
     public ArrayList<String> getVocabList(){
-        ArrayList<String> vocab = new ArrayList<>();
         for (String word : words) {
             if(!isWordInList(word, vocab)){
                 vocab.add(word);
@@ -48,8 +48,8 @@ public class Tweet {
         return vocab;  //non repeating words
     }
 
-    public boolean isWordInList(String target, ArrayList<String> text){
-        for (int i = 0; i < text.size(); i++) {
+    public boolean isWordInList(String target, ArrayList<String> list){
+        for (int i = 0; i < list.size(); i++) {
             if(text.contains(target)){
                 return true;
             }
@@ -83,47 +83,86 @@ public class Tweet {
         return wordCount;
     }
 
-    public void getOccurencesOfNegativeWords(){
-        for(int i =0; i<words.size(); i++) {
+    private void pattern3(){ // 0....+0
+        for (int i = 0; i < words.size(); i++) {
             String word = words.get(i);
-            String privWord = words.get(i - 1);
-            if (isNegative(word)) {
-                negative++;
-                if (isInCaps(word)) {
-                    negative = negative + 0.5;
-                }
-            }
-            if (privWord.equals("not")) {
-                positive++;
-                if (isInCaps(privWord)) {
-                    negative = negative + 0.5;
+            if(!isNeutral(word)) {
+                int count = 1;
+                String next = words.get(i + count);
+                if(!isNeutral(next)) {
+                    String lastWord = next;
+                    while (!isNeutral(lastWord)) {
+                        count = count + 1;
+                        lastWord = words.get(i + count);
+                    }
+                    if(isPositive(lastWord)){
+                        positive++;
+                        positives.add(lastWord);
+                        if(isInCaps(lastWord)){
+                            positive = positive + 0.5;
+                        }
+                    }
+                    if(isNegative(lastWord)) {
+                        negative++;
+                        negatives.add(lastWord);
+                        if(isInCaps(lastWord)){
+                            negative = negative + 0.5;
+                        }
+                    }
                 }
             }
         }
     }
 
-    public void getOccurencesOfPositiveWords(){
-        for(int i =0; i<words.size(); i++){
+    private void pattern2(){
+        for (int i = 0; i < words.size(); i++) {
             String word = words.get(i);
-            String privWord = words.get(i-1);
-            if(isPositive(word)){
-                positive++;
-                if(isInCaps(word)){
+            String next = words.get(i);
+            if(word.equals("not")){
+                if(isNegative(next)){
+                    positive++;
+                    positives.add("not " + next);
+                    if(isInCaps(next)){
                         positive = positive + 0.5;
                     }
                 }
-                if(privWord.equals("not")){
+                else if(isPositive(next)){
                     negative++;
-                    if(isInCaps(privWord)){
+                    negatives.add("not " + next);
+                    if(isInCaps(next)){
+                        negative = negative + 0.5;
+                    }
+                }
+            }
+        }
+    }
+
+    private void pattern1(){
+        for (int i = 0; i < words.size(); i++) {
+            String word = words.get(i);
+            String next = words.get(i);
+            if(!isNeutral(word) && isNeutral(next)){
+                if(isPositive(word)){
+                    positive++;
+                    positives.add(word);
+                    if(isInCaps(word)){
                         positive = positive + 0.5;
+                    }
+                }
+                else if(isNegative(word)){
+                    negative++;
+                    negatives.add(word);
+                    if(isInCaps(next)){
+                        negative = negative + 0.5;
+                    }
                 }
             }
         }
     }
 
     private boolean isNegative(String word) {
-        if(!isAnEmoji(word)) {
-            if (negatives.contains(word)) {
+        if(isAWord(word)) {
+            if (globalNegatives.contains(word)) {
                 return true;
             }
         }
@@ -136,8 +175,8 @@ public class Tweet {
     }
 
     private boolean isPositive(String word) {
-        if(!isAnEmoji(word)) {
-            if (positives.contains(word)) {
+        if(isAWord(word)) {
+            if (globalPositives.contains(word)) {
                 return true;
             }
         }
@@ -149,12 +188,12 @@ public class Tweet {
         return false;
     }
 
-//    private boolean isNeutral(String word){
-//        if(!positives.contains(word) && !negatives.contains(word)){
-//            return true;
-//        }
-//        return false;
-//    }
+    private boolean isNeutral(String word){
+        if(!positives.contains(word) && !negatives.contains(word)){
+            return true;
+        }
+        return false;
+    }
 
     public boolean isInCaps(String word){
         if("ABCDEFGHIJKLMNOPQRSTUVWXYZ".contains(word)){ //maybe change - ask mr D
@@ -163,7 +202,7 @@ public class Tweet {
         return false;
     }
 
-    public boolean isAnEmoji(String word){
+    public boolean isAWord(String word){
         int count = 0;
         word = word.toLowerCase();
         for (int i = 0; i < word.length()-1; i++) {
@@ -241,6 +280,13 @@ public class Tweet {
             output.add(sentence);
 
         return output;
+    }
+
+    public double calculateIntensity(){
+        double negPercentage = (double)(getNegative()/words.size()) *100;
+        double posPercentage = (double)(getPositive()/words.size()) *100;
+        double intensity = (double)(posPercentage/(negPercentage+posPercentage)*100);
+        return intensity;
     }
 }
 

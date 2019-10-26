@@ -33,13 +33,13 @@ public class ProcessFile {
         return words;
     }
 
-    public static ArrayList<TweetInfo> makeTweetInfoList(ArrayList<Tweet> tweets, ArrayList<String> connotation){
+    public static ArrayList<TweetInfo> makeTweetInfoList(ArrayList<Tweet> tweets, ArrayList<String> connotation, ArrayList<Double> intensities){
         ArrayList<TweetInfo> tweetsInfo = new ArrayList<>();
-        if(tweets.size() == connotation.size()) {
+        if(tweets.size() == connotation.size() && tweets.size() == intensities.size()) {
             for (int i = 0; i < tweets.size(); i++) {
                 Tweet tweet = tweets.get(i);
                 String cntion = connotation.get(i);
-                TweetInfo tweetInfo = new TweetInfo(tweet, cntion);
+                TweetInfo tweetInfo = new TweetInfo(tweet, cntion, 0);
             }
         }
         return tweetsInfo;
