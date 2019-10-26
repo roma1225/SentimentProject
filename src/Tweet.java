@@ -4,30 +4,49 @@ import java.util.Locale;
 
 public class Tweet {
     String text;
-    double positive;
-    double negative;
-    ArrayList<String> words = splitIntoWords(); //do we do this?
-    ArrayList<String> sentences = splitIntoSentences();
-    ArrayList<String> vocab = getVocabList();
-    ArrayList<String> alphabet = getCharcsList();
-    ArrayList<String> positives;
-    ArrayList<String> negatives;
-    ArrayList<String> positiveEmojis = ProcessFile.makeConnotationList("");
-    ArrayList<String> negativeEmojis = ProcessFile.makeConnotationList("");
-    ArrayList<String> globalPositives = ProcessFile.makeConnotationList("data/pos.csv"); //insert filenames
-    ArrayList<String> globalNegatives = ProcessFile.makeConnotationList("data/neg.csv");
-    double intensity;
+    double positive; //score
+    double negative; //score
+    ArrayList<String> words; //list of words
+    ArrayList<String> sentences; //list of sentences of the text
+    ArrayList<String> vocab; //vocabulary
+    ArrayList<String> alphabet; //A-Z
+    ArrayList<String> positives; //list of positive words of text
+    ArrayList<String> negatives; //list of negative words of text
+    ArrayList<String> positiveEmojis; //list of positive emojis
+    ArrayList<String> negativeEmojis; //list of negative emojis
+    ArrayList<String> globalPositives; // data set of pos
+    ArrayList<String> globalNegatives; // data set of neg
+    double intensity; //intensity calculated
 
 
     public Tweet(String text){
         this.text = text;
+        this.words = Statics.splitIntoWords(sentences);
+        this.sentences = Statics.splitIntoSentences(text);
+        this.vocab = getVocabList();
+        this.alphabet = getAlphabetList();
+        this.positiveEmojis = ProcessFile.makeConnotationList("");
+        this.negativeEmojis = ProcessFile.makeConnotationList("");
+        this.globalPositives = ProcessFile.makeConnotationList("data/pos.csv");
+        this.globalNegatives = ProcessFile.makeConnotationList("data/neg.csv");
+        this.intensity = calculateIntensity();
+        this.positive = getPositive(); ///????? its the score
+        this.negative = getNegative();//????
+    }
+
+    public ArrayList<String> getAlphabetList(){
+        return alphabet;
     }
 
     public ArrayList<String> getWordList(){
         return words;
     }
 
-    public String getTweet(){
+    public ArrayList<String> getSentenceList(){
+        return sentences;
+    }
+
+    public String getText(){
         return text;
     }
 
@@ -49,7 +68,7 @@ public class Tweet {
 
     public ArrayList<String> getVocabList(){
         for (String word : words) {
-            if(!isWordInList(word, vocab)){
+            if(!isWordInList(word, getVocabList())){
                 vocab.add(word);
             }
         }
@@ -58,7 +77,7 @@ public class Tweet {
 
     public boolean isWordInList(String target, ArrayList<String> list){
         for (int i = 0; i < list.size(); i++) {
-            if(text.contains(target)){
+            if(getText().contains(target)){
                 return true;
             }
         }
@@ -254,45 +273,9 @@ public class Tweet {
         return alphabet;
     }
 
-    public ArrayList<String> splitIntoWords() {
-        ArrayList<String> newWords = new ArrayList<>();
-        for (int i = 0; i < sentences.size(); i++) {
-            String sentence = sentences.get(i);
-            String[] words = sentence.split(" ");
-            for (String word: words) {
-                newWords.add(word);
-            }
-        }
-        return newWords;
-    }
-
-    public ArrayList<String> splitIntoSentences(){
-
-        ArrayList<String> output = new ArrayList<String>();
-        Locale locale = Locale.US;
-        BreakIterator breakIterator = BreakIterator.getSentenceInstance(locale);
-        breakIterator.setText(text);
-
-        int prevIndex = 0;
-        int boundaryIndex = breakIterator.first();
-        while(boundaryIndex != BreakIterator.DONE) {
-            String sentence = text.substring(prevIndex, boundaryIndex).trim();
-            if (sentence.length()>0)
-                output.add(sentence);
-            prevIndex = boundaryIndex;
-            boundaryIndex = breakIterator.next();
-        }
-
-        String sentence = text.substring(prevIndex).trim();
-        if (sentence.length()>0)
-            output.add(sentence);
-
-        return output;
-    }
-
     public double calculateIntensity(){
-        double negPercentage = (double)(getNegative()/words.size()) *100;
-        double posPercentage = (double)(getPositive()/words.size()) *100;
+        double negPercentage = (double)(getNegative()/getWordList().size()) *100;
+        double posPercentage = (double)(getPositive()/getWordList().size()) *100;
         double intense = (double)(posPercentage/(negPercentage+posPercentage)*100);
         return intense;
     }

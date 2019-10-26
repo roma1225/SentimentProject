@@ -5,7 +5,6 @@ import java.util.Locale;
 import java.util.Scanner;
 
 public class ProcessFile {
-    public static String filename;
 
     public static ArrayList<Tweet> makeTweetsList(String filename){
         String text = readFileAsString(filename);
@@ -14,7 +13,8 @@ public class ProcessFile {
         int lines = 2836;
 
         for (int i = 0; i < lines; i++) {
-            Tweet tweet = new Tweet(texts[i]);
+            Tweet tweet;
+            tweet = new Tweet(texts[i]);
             tweets.add(tweet);
         }
         return tweets;
@@ -26,7 +26,7 @@ public class ProcessFile {
         ArrayList<String> words = new ArrayList<>();
         int lines = 4500; //supposed to be countlines();
 
-        for (int i = 0; i < lines; i++) {
+        for (int i = 0; i <= lines; i++) {
             String word = texts[i];
             words.add(word);
         }
