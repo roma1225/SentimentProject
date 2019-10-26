@@ -39,7 +39,8 @@ public class ProcessFile {
             for (int i = 0; i < tweets.size(); i++) {
                 Tweet tweet = tweets.get(i);
                 String cntion = connotation.get(i);
-                TweetInfo tweetInfo = new TweetInfo(tweet, cntion, 0);
+                double intensity = intensities.get(i);
+                TweetInfo tweetInfo = new TweetInfo(tweet, cntion, intensity);
             }
         }
         return tweetsInfo;

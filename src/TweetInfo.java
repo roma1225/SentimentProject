@@ -1,7 +1,7 @@
 public class TweetInfo {
-    static Tweet tweet;
-    static double intensity;
-    static String connotation;
+    Tweet tweet;
+    double intensity;
+    String connotation;
 
     public TweetInfo(Tweet tweet, String connotation, double intensity){
         this.tweet = tweet;
@@ -9,15 +9,19 @@ public class TweetInfo {
         this.connotation = connotation;
     }
 
-    public static Tweet getTweet(){
+    public Tweet getTweet(){
         return tweet;
     }
 
-    public static double getIntensity(){
+    public double getIntensity(){
         return intensity;
     }
 
-    public static String getConnotation(){
+    public void setIntensity(double intensiti){
+        intensity = intensiti;
+    }
+
+    public String getConnotation(){
         return connotation;
     }
 

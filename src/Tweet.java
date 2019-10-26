@@ -10,13 +10,13 @@ public class Tweet {
     ArrayList<String> sentences = splitIntoSentences();
     ArrayList<String> vocab = getVocabList();
     ArrayList<String> alphabet = getCharcsList();
-    public ArrayList<String> positives;
-    public ArrayList<String> negatives;
+    ArrayList<String> positives;
+    ArrayList<String> negatives;
     ArrayList<String> positiveEmojis = ProcessFile.makeConnotationList("");
     ArrayList<String> negativeEmojis = ProcessFile.makeConnotationList("");
-    ArrayList<String> globalPositives = ProcessFile.makeConnotationList(""); //insert filenames
-    ArrayList<String> globalNegatives = ProcessFile.makeConnotationList("");
-    public double intensity;
+    ArrayList<String> globalPositives = ProcessFile.makeConnotationList("pos.csv"); //insert filenames
+    ArrayList<String> globalNegatives = ProcessFile.makeConnotationList("neg.csv");
+    double intensity;
 
 
     public Tweet(String text){
@@ -37,6 +37,14 @@ public class Tweet {
 
     public double getNegative(){
         return negative;
+    }
+
+    public double getIntensity(){
+        return calculateIntensity();
+    }
+
+    public void setIntensity(double newIntensity){
+        intensity = newIntensity;
     }
 
     public ArrayList<String> getVocabList(){
@@ -285,8 +293,8 @@ public class Tweet {
     public double calculateIntensity(){
         double negPercentage = (double)(getNegative()/words.size()) *100;
         double posPercentage = (double)(getPositive()/words.size()) *100;
-        double intensity = (double)(posPercentage/(negPercentage+posPercentage)*100);
-        return intensity;
+        double intense = (double)(posPercentage/(negPercentage+posPercentage)*100);
+        return intense;
     }
 }
 
