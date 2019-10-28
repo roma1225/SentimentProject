@@ -41,7 +41,8 @@ public class Main {
     public static String sentimentScore(Tweet tweet) {
         double negBorder = 33.34;
         double posBorder = 66.67;
-        double intensity = tweet.getIntensity();
+        double intensity = tweet.calculateIntensity();
+        System.out.println(intensity);
         String connotation = "";
 
         if(intensity>posBorder && intensity <= 100) {

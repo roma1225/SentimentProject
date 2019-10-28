@@ -8,9 +8,9 @@ public class ProcessFile {
 
     public static ArrayList<Tweet> makeTweetsList(String filename){
         String text = readFileAsString(filename);
-        String[] texts = text.split("\n");
+        String[] texts = text.split("@");
         ArrayList<Tweet> tweets = new ArrayList<>();
-        int lines = 2836;
+        int lines = texts.length;
 
         for (int i = 0; i < lines; i++) {
             Tweet tweet;
@@ -20,13 +20,19 @@ public class ProcessFile {
         return tweets;
     }
 
+    private static String readTweet(String line) {
+        int index = line.indexOf(" ");
+        line.substring(index + 1);
+        return line;
+    }
+
     public static ArrayList<String> makeConnotationList(String filename){
         String text = readFileAsString(filename);
         String[] texts = text.split("\n");
         ArrayList<String> words = new ArrayList<>();
-        int lines = 4500; //supposed to be countlines();
+        int lines = texts.length;
 
-        for (int i = 0; i <= lines; i++) {
+        for (int i = 0; i < lines; i++) {
             String word = texts[i];
             words.add(word);
         }
@@ -61,6 +67,7 @@ public class ProcessFile {
             while (scanner.hasNextLine()) {
                String line = scanner.nextLine();
                 output.append(line.trim()+"\n");
+                output.append(readTweet(line));
             }
 
             scanner.close();
@@ -71,38 +78,6 @@ public class ProcessFile {
 
         return output.toString();
     }
-
-
-//    public static int countLines() {
-//        try{
-//
-//            File file =new File("data/tweets.csv");
-//
-//            if(file.exists()){
-//
-//                FileReader fileReader = new FileReader(filename);
-//                LineNumberReader lnr = new LineNumberReader(fileReader);
-//
-//                int linenumber = 0;
-//
-//                while (lnr.readLine() != null){
-//                    linenumber++;
-//                }
-//
-//                return linenumber;
-//
-//
-//            }else{
-//                System.out.println("File does not exists!");
-//                return 0;
-//            }
-//
-//        }catch(IOException e){
-//            e.printStackTrace();
-//        }
-//
-//        return 0;
-//    }
 
 }
 

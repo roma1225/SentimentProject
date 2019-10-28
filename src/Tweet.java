@@ -21,18 +21,18 @@ public class Tweet {
 
     public Tweet(String text){
         this.text = text;
-        this.words = Statics.splitIntoWords(sentences);
         this.sentences = Statics.splitIntoSentences(text);
-        this.vocab = getVocabList();
+        this.words = Statics.splitIntoWords(sentences);
         this.alphabet = getAlphabetList();
-        this.positiveEmojis = ProcessFile.makeConnotationList("");
-        this.negativeEmojis = ProcessFile.makeConnotationList("");
+//        this.positiveEmojis = ProcessFile.makeConnotationList("");
+//        this.negativeEmojis = ProcessFile.makeConnotationList("");
         this.globalPositives = ProcessFile.makeConnotationList("data/pos.csv");
         this.globalNegatives = ProcessFile.makeConnotationList("data/neg.csv");
         this.intensity = calculateIntensity();
         this.positive = getPositive(); ///????? its the score
         this.negative = getNegative();//????
     }
+
 
     public ArrayList<String> getAlphabetList(){
         return alphabet;
@@ -66,14 +66,14 @@ public class Tweet {
         intensity = newIntensity;
     }
 
-    public ArrayList<String> getVocabList(){
-        for (String word : words) {
-            if(!isWordInList(word, getVocabList())){
-                vocab.add(word);
-            }
-        }
-        return vocab;  //non repeating words
-    }
+//    public ArrayList<String> getVocabList(){
+//        for (String word : words) {
+//            if(!isWordInList(word, getVocabList())){
+//                vocab.add(word);
+//            }
+//        }
+//        return vocab;  //non repeating words
+//    }
 
     public boolean isWordInList(String target, ArrayList<String> list){
         for (int i = 0; i < list.size(); i++) {
