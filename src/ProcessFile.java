@@ -10,7 +10,7 @@ public class ProcessFile {
         String text = readFileAsString(filename);
         String[] texts = text.split("\n");
         ArrayList<Tweet> tweets = new ArrayList<>();
-        int lines = texts.length;
+        int lines = 30;//texts.length;
 
         System.out.println("Lines: " + lines);
 
@@ -28,7 +28,7 @@ public class ProcessFile {
         String[] texts = text.split("\n");
 
         ArrayList<String> words = new ArrayList<>();
-        int lines = texts.length;
+        int lines = 30;//texts.length;
 
         for (int i = 0; i < lines; i++) {
             String word = texts[i];

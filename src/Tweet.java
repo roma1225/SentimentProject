@@ -4,8 +4,6 @@ import java.util.Locale;
 
 public class Tweet {
     String text;
-    double positive; //score
-    double negative; //score
     ArrayList<String> words; //list of words
     ArrayList<String> sentences; //list of sentences of the text
     ArrayList<String> vocab; //vocabulary
@@ -16,6 +14,7 @@ public class Tweet {
     ArrayList<String> negativeEmojis; //list of negative emojis
     ArrayList<String> globalPositives; // data set of pos
     ArrayList<String> globalNegatives; // data set of neg
+    ArrayList<String> capitalAlphabet;
     double intensity; //intensity calculated
 
 
@@ -29,8 +28,6 @@ public class Tweet {
         this.globalPositives = ProcessFile.makeConnotationList("data/pos.csv");
         this.globalNegatives = ProcessFile.makeConnotationList("data/neg.csv");
         this.intensity = calculateIntensity();
-        this.positive = getPositive(); ///????? its the score
-        this.negative = getNegative();//????
     }
 
     public ArrayList<String> getAlphabetList(){
@@ -47,14 +44,6 @@ public class Tweet {
 
     public String getText(){
         return text;
-    }
-
-    public double getPositive(){
-        return positive;
-    }
-
-    public double getNegative(){
-        return negative;
     }
 
     public double getIntensity(){
@@ -109,13 +98,18 @@ public class Tweet {
         return wordCount;
     }
 
-    private void pattern3(){ // 0....+0
+    public double[] runAllPatterns(){
+        double negative = 0;
+        double positive = 0;
         for (int i = 0; i < words.size(); i++) {
             String word = words.get(i);
-            if(!isNeutral(word)) {
+            // if (isAWord(word)) {
+            if (!isNeutral(word)) {
                 int count = 1;
-                if (i - 1 < words.size() && i > 0) {
-                    String next = words.get(i + count);
+                if (i + 1 < words.size() && i > 0) {
+                    int index = i + count;
+                    String next;
+                    next = words.get(index);
                     if (!isNeutral(next)) {
                         String lastWord = next;
                         while (!isNeutral(lastWord)) {
@@ -148,12 +142,6 @@ public class Tweet {
                     }
                 }
             }
-        }
-    }
-
-    private void pattern2(){
-        for (int i = 0; i < words.size(); i++) {
-            String word = words.get(i);
             String next = words.get(i);
             if(word.equals("not")){
                 if(isNegative(next)){
@@ -180,13 +168,6 @@ public class Tweet {
                     }
                 }
             }
-        }
-    }
-
-    private void pattern1(){
-        for (int i = 0; i < words.size(); i++) {
-            String word = words.get(i);
-            String next = words.get(i);
             if(!isNeutral(word) && isNeutral(next)){
                 if(isPositive(word)){
                     positive++;
@@ -213,10 +194,123 @@ public class Tweet {
                 }
             }
         }
+        double[] negAndPos = new double[]{negative, positive};
+        return negAndPos;
+        //}
     }
 
+//    public void pattern3(){ // 0....+0
+//        for (int i = 0; i < words.size(); i++) {
+//            String word = words.get(i);
+//           // if (isAWord(word)) {
+//                if (!isNeutral(word)) {
+//                    int count = 1;
+//                    if (i + 1 < words.size() && i > 0) {
+//                        int index = i + count;
+//                        String next;
+//                        next = words.get(index);
+//                        if (!isNeutral(next)) {
+//                            String lastWord = next;
+//                            while (!isNeutral(lastWord)) {
+//                                count = count + 1;
+//                                lastWord = words.get(i + count);
+//                            }
+//                            if (isPositive(lastWord)) {
+//                                positive++;
+//                                positives.add(lastWord);
+//                                if (isInCaps(lastWord)) {
+//                                    positive = positive + 0.5;
+//                                }
+//                                if (next.contains("!")) {
+//                                    positive = positive + 0.5;
+//                                }
+//                            }
+//                            if (isNegative(lastWord)) {
+//                                negative++;
+//                                negatives.add(lastWord);
+//                                if (isInCaps(lastWord)) {
+//                                    negative = negative + 0.5;
+//                                }
+//                                if (next.contains("!")) {
+//                                    negative = negative + 0.5;
+//                                }
+//                                if (next.contains("?")) {
+//                                    negative = negative + 0.25;
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        //}
+//    }
+//
+//    public void pattern2(){
+//        for (int i = 0; i < words.size(); i++) {
+//            String word = words.get(i);
+//            String next = words.get(i);
+//            if(word.equals("not")){
+//                if(isNegative(next)){
+//                    positive++;
+//                    positives.add("not " + next);
+//                    if(isInCaps(next)){
+//                        positive = positive + 0.5;
+//                    }
+//                    if(next.contains("!")){
+//                        positive = positive + 0.5;
+//                    }
+//                }
+//                else if(isPositive(next)){
+//                    negative++;
+//                    negatives.add("not " + next);
+//                    if(isInCaps(next)){
+//                        negative = negative + 0.5;
+//                    }
+//                    if(next.contains("!")){
+//                        negative = negative + 0.5;
+//                    }
+//                    if(next.contains("?")){
+//                        negative = negative + 0.25;
+//                    }
+//                }
+//            }
+//        }
+//    }
+//
+//    public void pattern1(){
+//        for (int i = 0; i < words.size(); i++) {
+//            String word = words.get(i);
+//            String next = words.get(i);
+//            if(!isNeutral(word) && isNeutral(next)){
+//                if(isPositive(word)){
+//                    positive++;
+//                    positives.add(word);
+//                    if(isInCaps(word)){
+//                        positive = positive + 0.5;
+//                    }
+//                    if(next.contains("!")){
+//                        positive = positive + 0.5;
+//                    }
+//                }
+//                else if(isNegative(word)){
+//                    negative++;
+//                    negatives.add(word);
+//                    if(isInCaps(next)){
+//                        negative = negative + 0.5;
+//                    }
+//                    if(next.contains("!")){
+//                        negative = negative + 0.5;
+//                    }
+//                    if(next.contains("?")){
+//                        negative = negative + 0.25;
+//                    }
+//                }
+//            }
+//        }
+//    }
 
-    private boolean isNegative(String word) {
+
+    public boolean isNegative(String word) {
         //if(isAWord(word)) {
             if (globalNegatives.contains(word)) {
                 return true;
@@ -230,7 +324,7 @@ public class Tweet {
         return false;
     }
 
-    private boolean isPositive(String word) {
+    public boolean isPositive(String word) {
 //        if(isAWord(word)) {
             if (globalPositives.contains(word)) {
                 return true;
@@ -252,11 +346,56 @@ public class Tweet {
     }
 
     public boolean isInCaps(String word){
-        if("ABCDEFGHIJKLMNOPQRSTUVWXYZ".contains(word)){ //maybe change - ask mr D
+        int count = 0;
+        for(int j = 0; j< capitalAlphabet.size(); j++ ){
+            String alphabetLetter = capitalAlphabet.get(j);
+            if(word.contains(alphabetLetter)){
+                count++;
+            }
+        }
+        if(count == word.length()){
             return true;
         }
         return false;
     }
+
+    private ArrayList<String> getCapitalCharcsList(){
+        ArrayList<String> capitalAlphabet = new ArrayList<>();
+
+        capitalAlphabet.add("A");
+        capitalAlphabet.add("B");
+        capitalAlphabet.add("C");
+        capitalAlphabet.add("D");
+        capitalAlphabet.add("E");
+        capitalAlphabet.add("F");
+        capitalAlphabet.add("G");
+        capitalAlphabet.add("H");
+        capitalAlphabet.add("I");
+        capitalAlphabet.add("J");
+        capitalAlphabet.add("K");
+        capitalAlphabet.add("L");
+        capitalAlphabet.add("M");
+        capitalAlphabet.add("N");
+        capitalAlphabet.add("O");
+        capitalAlphabet.add("P");
+        capitalAlphabet.add("Q");
+        capitalAlphabet.add("R");
+        capitalAlphabet.add("S");
+        capitalAlphabet.add("T");
+        capitalAlphabet.add("U");
+        capitalAlphabet.add("V");
+        capitalAlphabet.add("W");
+        capitalAlphabet.add("X");
+        capitalAlphabet.add("Y");
+        capitalAlphabet.add("Z");
+        capitalAlphabet.add("'");
+
+        return capitalAlphabet;
+
+    }
+
+
+
 
     public boolean isAWord(String word){
         int count = 0;
@@ -271,7 +410,7 @@ public class Tweet {
         else return false;
     }
 
-    private ArrayList<String> getCharcsList(){ //should be here?
+    public ArrayList<String> getCharcsList(){ //should be here?
         ArrayList<String> alphabet = new ArrayList<>();
         alphabet.add("a");
         alphabet.add("b");
@@ -299,18 +438,31 @@ public class Tweet {
         alphabet.add("x");
         alphabet.add("y");
         alphabet.add("z");
+        alphabet.add(";");
+        alphabet.add(":");
+        alphabet.add("'");
+        alphabet.add("/");
+        alphabet.add("-");
+        alphabet.add("*");
+        alphabet.add("`");
+        alphabet.add("_");
+        alphabet.add(".");
+        alphabet.add("(");
+        alphabet.add(")");
         return alphabet;
     }
 
     public double calculateIntensity(){
-        pattern1();
-        pattern3();
-        pattern2();
-        double negPercentage = (getNegative()/getWordList().size()) *100;
-        double posPercentage = (getPositive()/getWordList().size()) *100;
+        double[] np = runAllPatterns();
+        double neg = np[0];
+        double pos = np[1];
+        System.out.println(neg + " " + pos);
+        double negPercentage = (neg/getWordList().size()) *100;
+        double posPercentage = (pos/getWordList().size()) *100;
         double intense = (posPercentage/(negPercentage+posPercentage)*100);
         return intense;
     }
+
 }
 
 

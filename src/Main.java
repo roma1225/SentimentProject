@@ -36,8 +36,8 @@ public class Main {
             Tweet tweet = tweetInfo.getTweet();
 
             String prediction = sentimentScore(tweet);
-            System.out.println(prediction + " ");
-            System.out.println(connotation);
+            System.out.println("p: " + prediction);
+            System.out.println("a: " +connotation);
 
             if(prediction.equals(connotation)) count++;
         }
