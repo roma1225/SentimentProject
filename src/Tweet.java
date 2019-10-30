@@ -114,7 +114,7 @@ public class Tweet {
             String word = words.get(i);
             if(!isNeutral(word)) {
                 int count = 1;
-                if (i - 1 < words.size()) {
+                if (i - 1 < words.size() && i > 0) {
                     String next = words.get(i + count);
                     if (!isNeutral(next)) {
                         String lastWord = next;
