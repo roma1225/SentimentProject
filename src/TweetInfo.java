@@ -22,6 +22,7 @@ public class TweetInfo {
     }
 
     public String getConnotation(){
+
         return connotation;
     }
 

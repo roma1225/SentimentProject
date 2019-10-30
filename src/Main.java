@@ -7,6 +7,8 @@ public class Main {
         ArrayList<String> connotationsOfTweets = ProcessFile.makeConnotationList("data/connotation.csv");
         ArrayList<Double> intensities = makeIntensitiesList(tweets);
         ArrayList<TweetInfo> tweetsInfo = ProcessFile.makeTweetInfoList(tweets, connotationsOfTweets, intensities);
+
+
         calculateAndDisplayError(tweetsInfo);
 
     }
@@ -22,18 +24,26 @@ public class Main {
     }
 
     private static void calculateAndDisplayError(ArrayList<TweetInfo> tweetsInfo){
-
+        System.out.println("starting to calculate and display");
         double count = 0;
+
+        System.out.println(tweetsInfo.size());
 
         for (int i = 0; i < tweetsInfo.size(); i++) {
             TweetInfo tweetInfo = tweetsInfo.get(i);
             String connotation = tweetInfo.getConnotation();
-            Tweet tweet = tweetInfo.getTweet();
-            String prediction = sentimentScore(tweet);
-            String answer = connotation;
-            if(prediction.equals(connotation)) count++;
 
+            Tweet tweet = tweetInfo.getTweet();
+
+            String prediction = sentimentScore(tweet);
+            System.out.println(prediction + " ");
+            System.out.println(connotation);
+
+            if(prediction.equals(connotation)) count++;
         }
+
+        System.out.println(count);
+        System.out.println(tweetsInfo.size());
 
         System.out.println("You Got: " + count/tweetsInfo.size() *100 + "% Correct!");
     }
@@ -42,7 +52,6 @@ public class Main {
         double negBorder = 33.34;
         double posBorder = 66.67;
         double intensity = tweet.calculateIntensity();
-        System.out.println(intensity);
         String connotation = "";
 
         if(intensity>posBorder && intensity <= 100) {

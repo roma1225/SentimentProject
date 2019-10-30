@@ -8,27 +8,25 @@ public class ProcessFile {
 
     public static ArrayList<Tweet> makeTweetsList(String filename){
         String text = readFileAsString(filename);
-        String[] texts = text.split("@");
+        String[] texts = text.split("\n");
         ArrayList<Tweet> tweets = new ArrayList<>();
         int lines = texts.length;
+
+        System.out.println("Lines: " + lines);
 
         for (int i = 0; i < lines; i++) {
             Tweet tweet;
             tweet = new Tweet(texts[i]);
             tweets.add(tweet);
+
         }
         return tweets;
-    }
-
-    private static String readTweet(String line) {
-        int index = line.indexOf(" ");
-        line.substring(index + 1);
-        return line;
     }
 
     public static ArrayList<String> makeConnotationList(String filename){
         String text = readFileAsString(filename);
         String[] texts = text.split("\n");
+
         ArrayList<String> words = new ArrayList<>();
         int lines = texts.length;
 
@@ -42,7 +40,10 @@ public class ProcessFile {
     public static ArrayList<TweetInfo> makeTweetInfoList(ArrayList<Tweet> tweets, ArrayList<String> connotation, ArrayList<Double> intensities){
         ArrayList<TweetInfo> tweetsInfo = new ArrayList<>();
 
-        if(tweets.size() == connotation.size() && tweets.size() == intensities.size()) {
+        System.out.println(tweets.size());
+        System.out.println(connotation.size());
+
+        if(tweets.size() == connotation.size()) {
 
             for (int i = 0; i < tweets.size(); i++) {
 
@@ -54,7 +55,7 @@ public class ProcessFile {
 
             }
         }
-
+        System.out.println(tweetsInfo.size());
         return tweetsInfo;
     }
 
@@ -65,9 +66,11 @@ public class ProcessFile {
         try {
             scanner = new Scanner(new FileInputStream(filename), "UTF-8");
             while (scanner.hasNextLine()) {
-               String line = scanner.nextLine();
+                String line = scanner.nextLine();
+                if(filename.equals("data/tweets.csv")) {
+                    line = removeExcessThings(line);
+                }
                 output.append(line.trim()+"\n");
-                output.append(readTweet(line));
             }
 
             scanner.close();
@@ -79,5 +82,18 @@ public class ProcessFile {
         return output.toString();
     }
 
+    public static String removeExcessThings(String line){
+        String newLine = line;
+        for (int i = 0; i < line.length(); i++) {
+            String thing = line.substring(i, i+ 1);
+            if(thing.equals("@")){
+                int endOfThing = line.indexOf(" ", i);
+                if(endOfThing < line.length()) {
+                    newLine = line.substring(0, i) + line.substring(endOfThing + 1);
+                }
+            }
+        }
+        return newLine;
+    }
 }
 

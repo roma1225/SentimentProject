@@ -33,7 +33,6 @@ public class Tweet {
         this.negative = getNegative();//????
     }
 
-
     public ArrayList<String> getAlphabetList(){
         return alphabet;
     }
@@ -115,25 +114,36 @@ public class Tweet {
             String word = words.get(i);
             if(!isNeutral(word)) {
                 int count = 1;
-                String next = words.get(i + count);
-                if(!isNeutral(next)) {
-                    String lastWord = next;
-                    while (!isNeutral(lastWord)) {
-                        count = count + 1;
-                        lastWord = words.get(i + count);
-                    }
-                    if(isPositive(lastWord)){
-                        positive++;
-                        positives.add(lastWord);
-                        if(isInCaps(lastWord)){
-                            positive = positive + 0.5;
+                if (i - 1 < words.size()) {
+                    String next = words.get(i + count);
+                    if (!isNeutral(next)) {
+                        String lastWord = next;
+                        while (!isNeutral(lastWord)) {
+                            count = count + 1;
+                            lastWord = words.get(i + count);
                         }
-                    }
-                    if(isNegative(lastWord)) {
-                        negative++;
-                        negatives.add(lastWord);
-                        if(isInCaps(lastWord)){
-                            negative = negative + 0.5;
+                        if (isPositive(lastWord)) {
+                            positive++;
+                            positives.add(lastWord);
+                            if (isInCaps(lastWord)) {
+                                positive = positive + 0.5;
+                            }
+                            if (next.contains("!")) {
+                                positive = positive + 0.5;
+                            }
+                        }
+                        if (isNegative(lastWord)) {
+                            negative++;
+                            negatives.add(lastWord);
+                            if (isInCaps(lastWord)) {
+                                negative = negative + 0.5;
+                            }
+                            if (next.contains("!")) {
+                                negative = negative + 0.5;
+                            }
+                            if (next.contains("?")) {
+                                negative = negative + 0.25;
+                            }
                         }
                     }
                 }
@@ -152,12 +162,21 @@ public class Tweet {
                     if(isInCaps(next)){
                         positive = positive + 0.5;
                     }
+                    if(next.contains("!")){
+                        positive = positive + 0.5;
+                    }
                 }
                 else if(isPositive(next)){
                     negative++;
                     negatives.add("not " + next);
                     if(isInCaps(next)){
                         negative = negative + 0.5;
+                    }
+                    if(next.contains("!")){
+                        negative = negative + 0.5;
+                    }
+                    if(next.contains("?")){
+                        negative = negative + 0.25;
                     }
                 }
             }
@@ -175,6 +194,9 @@ public class Tweet {
                     if(isInCaps(word)){
                         positive = positive + 0.5;
                     }
+                    if(next.contains("!")){
+                        positive = positive + 0.5;
+                    }
                 }
                 else if(isNegative(word)){
                     negative++;
@@ -182,41 +204,48 @@ public class Tweet {
                     if(isInCaps(next)){
                         negative = negative + 0.5;
                     }
+                    if(next.contains("!")){
+                        negative = negative + 0.5;
+                    }
+                    if(next.contains("?")){
+                        negative = negative + 0.25;
+                    }
                 }
             }
         }
     }
 
+
     private boolean isNegative(String word) {
-        if(isAWord(word)) {
+        //if(isAWord(word)) {
             if (globalNegatives.contains(word)) {
                 return true;
             }
-        }
-        else {
-            if (negativeEmojis.contains(word)) {
-                return true;
-            }
-        }
+       // }
+//        else {
+//            if (negativeEmojis.contains(word)) {
+//                return true;
+//            }
+//        }
         return false;
     }
 
     private boolean isPositive(String word) {
-        if(isAWord(word)) {
+//        if(isAWord(word)) {
             if (globalPositives.contains(word)) {
                 return true;
             }
-        }
-        else {
-            if (positiveEmojis.contains(word)) {
-                return true;
-            }
-        }
+        //}
+//        else {
+//            if (positiveEmojis.contains(word)) {
+//                return true;
+//            }
+     //   }
         return false;
     }
 
-    private boolean isNeutral(String word){
-        if(!positives.contains(word) && !negatives.contains(word)){
+    public boolean isNeutral(String word){
+        if(!isPositive(word) && !isNegative(word)){
             return true;
         }
         return false;
@@ -234,7 +263,7 @@ public class Tweet {
         word = word.toLowerCase();
         for (int i = 0; i < word.length()-1; i++) {
             String charc = word.substring(i, i+1);
-            if(alphabet.contains(charc)){
+            if(isWordInList(charc, alphabet)){
                 count++;
             }
         }
@@ -274,9 +303,12 @@ public class Tweet {
     }
 
     public double calculateIntensity(){
-        double negPercentage = (double)(getNegative()/getWordList().size()) *100;
-        double posPercentage = (double)(getPositive()/getWordList().size()) *100;
-        double intense = (double)(posPercentage/(negPercentage+posPercentage)*100);
+        pattern1();
+        pattern3();
+        pattern2();
+        double negPercentage = (getNegative()/getWordList().size()) *100;
+        double posPercentage = (getPositive()/getWordList().size()) *100;
+        double intense = (posPercentage/(negPercentage+posPercentage)*100);
         return intense;
     }
 }
