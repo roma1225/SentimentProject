@@ -2,12 +2,10 @@ import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) {
-
         ArrayList<Tweet> tweets = ProcessFile.makeTweetsList("data/tweets.csv"); // what about first line???!
         ArrayList<String> connotationsOfTweets = ProcessFile.makeConnotationList("data/connotation.csv");
         ArrayList<Double> intensities = makeIntensitiesList(tweets);
         ArrayList<TweetInfo> tweetsInfo = ProcessFile.makeTweetInfoList(tweets, connotationsOfTweets, intensities);
-
 
         calculateAndDisplayError(tweetsInfo);
 
@@ -36,6 +34,7 @@ public class Main {
             Tweet tweet = tweetInfo.getTweet();
 
             String prediction = sentimentScore(tweet);
+            System.out.println(tweet);
             System.out.println("p: " + prediction);
             System.out.println("a: " +connotation);
 
@@ -65,6 +64,7 @@ public class Main {
         }
         return connotation;
     }
+
 
 
 }

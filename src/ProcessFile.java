@@ -10,7 +10,7 @@ public class ProcessFile {
         String text = readFileAsString(filename);
         String[] texts = text.split("\n");
         ArrayList<Tweet> tweets = new ArrayList<>();
-        int lines = 30;//texts.length;
+        int lines = texts.length;
 
         System.out.println("Lines: " + lines);
 
@@ -28,7 +28,7 @@ public class ProcessFile {
         String[] texts = text.split("\n");
 
         ArrayList<String> words = new ArrayList<>();
-        int lines = 30;//texts.length;
+        int lines = texts.length;
 
         for (int i = 0; i < lines; i++) {
             String word = texts[i];
@@ -39,9 +39,6 @@ public class ProcessFile {
 
     public static ArrayList<TweetInfo> makeTweetInfoList(ArrayList<Tweet> tweets, ArrayList<String> connotation, ArrayList<Double> intensities){
         ArrayList<TweetInfo> tweetsInfo = new ArrayList<>();
-
-        System.out.println(tweets.size());
-        System.out.println(connotation.size());
 
         if(tweets.size() == connotation.size()) {
 
@@ -55,7 +52,6 @@ public class ProcessFile {
 
             }
         }
-        System.out.println(tweetsInfo.size());
         return tweetsInfo;
     }
 
@@ -78,7 +74,6 @@ public class ProcessFile {
         } catch (FileNotFoundException e) {
             System.out.println("File not found " + filename);
         }
-
         return output.toString();
     }
 
